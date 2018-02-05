@@ -45,13 +45,15 @@
                                     <constraint firstItem="aAb-D7-UT9" firstAttribute="centerY" secondItem="toE-Sb-b93" secondAttribute="centerY" id="fbY-cd-fzc"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1eg-hk-K92">
-                                <rect key="frame" x="0.0" y="548" width="320" height="0.0"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1eg-hk-K92">
+                                <rect key="frame" x="0.0" y="548" width="320" height="1"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="ITu-sP-opc"/>
+                                </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="onB-7v-Ooo">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="onB-7v-Ooo">
                                 <rect key="frame" x="244" y="481" width="67" height="67"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="locationButton"/>
                                 <connections>
                                     <action selector="centerMapWasPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3pr-6S-oVV"/>
@@ -60,8 +62,8 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="1eg-hk-K92" secondAttribute="bottom" id="4vk-BC-l1P"/>
                             <constraint firstItem="j7m-4E-Xkl" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="6Ld-06-6Sa"/>
-                            <constraint firstItem="1eg-hk-K92" firstAttribute="top" secondItem="wfy-db-euE" secondAttribute="bottom" id="BHn-co-yvO"/>
                             <constraint firstAttribute="trailing" secondItem="1eg-hk-K92" secondAttribute="trailing" id="CDk-q7-kiN"/>
                             <constraint firstAttribute="trailing" secondItem="j7m-4E-Xkl" secondAttribute="trailing" id="Chh-bP-O2g"/>
                             <constraint firstItem="toE-Sb-b93" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="EuP-XH-5oX"/>
@@ -69,11 +71,15 @@
                             <constraint firstItem="j7m-4E-Xkl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="SkR-eM-QVy"/>
                             <constraint firstItem="toE-Sb-b93" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="js8-d3-AA6"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="j7m-4E-Xkl" secondAttribute="bottom" id="kJV-y6-6tW"/>
+                            <constraint firstItem="1eg-hk-K92" firstAttribute="top" secondItem="onB-7v-Ooo" secondAttribute="bottom" constant="20" id="tvK-xq-tOZ"/>
+                            <constraint firstAttribute="trailing" secondItem="onB-7v-Ooo" secondAttribute="trailing" id="yLw-Qe-8Kt"/>
                             <constraint firstItem="1eg-hk-K92" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="yn2-c9-Mne"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="j7m-4E-Xkl" id="pga-Mt-E2N"/>
+                        <outlet property="pullUpView" destination="1eg-hk-K92" id="KTY-r5-dQj"/>
+                        <outlet property="pullUpViewConstrain" destination="ITu-sP-opc" id="zCS-p0-9IE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
