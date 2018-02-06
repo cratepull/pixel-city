@@ -200,7 +200,6 @@ extension MapVC: MKMapViewDelegate{
     }
     
     func retrieveUrls(forAnnotation anotation: DroppablePin, handler: @escaping (_ status: Bool)->()){
-        
         Alamofire.request(flickrUrl(forApiKey: apiKey, withAnnotation: anotation, andNumberOfPhotos: 40)).responseJSON { (response) in
             
             guard let json = response.result.value as? Dictionary<String, AnyObject> else { return }
@@ -274,9 +273,13 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.addSubview(imageView)
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let popVC = storyboard?.instantiateViewController(withIdentifier: "PopVC") as? PopVC
+            else { return }
+        
+        popVC.initData(forImage: self.imageArray[indexPath.row])
+        present(popVC, animated: true, completion: nil)
+    }
 }
-
-
-
-
 
