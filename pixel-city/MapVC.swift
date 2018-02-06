@@ -24,15 +24,17 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     var spinner: UIActivityIndicatorView?
     var progressLabel: UILabel?
     var screenSize = UIScreen.main.bounds
-    var collectionView : UICollectionView?
-    var flowLayout  = UICollectionViewFlowLayout()
     
-    var imageUrlArray = [String]()
-    var imageArray = [UIImage]()
     
     let authorizationStatus = CLLocationManager.authorizationStatus()
     let regionRadous:Double = 1000
     
+    var flowLayout  = UICollectionViewFlowLayout()
+    var collectionView : UICollectionView?
+    
+    
+    var imageUrlArray = [String]()
+    var imageArray = [UIImage]()
     
     // Actions
    
@@ -55,7 +57,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         collectionView?.register(PhotoCell.self, forCellWithReuseIdentifier: "photoCell")
         collectionView?.delegate = self
         collectionView?.dataSource = self
-        collectionView?.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
+        collectionView?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
         pullUpView.addSubview(collectionView!)
     }
@@ -67,8 +69,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         doubleTap.numberOfTapsRequired = 2
         doubleTap.delegate = self
         mapView.addGestureRecognizer(doubleTap)
-    
-    
     }
     
     func addSwipe(){
@@ -79,28 +79,23 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func animateViewDown(){
-        cancelAllSesions()
-        
+        cancelAllSessions()
         pullUpViewConstrain.constant = 0
-        
         UIView.animate(withDuration: 0.3) { 
             self.view.layoutIfNeeded()
         }
     }
     
     func addSpinner(){
-        
         spinner = UIActivityIndicatorView()
-        spinner?.center = CGPoint(x: (screenSize.width / 2) - ((spinner?.frame.width)! / 2) , y:  75 )
+        spinner?.center = CGPoint(x: (screenSize.width / 2) - ((spinner?.frame.width)! / 2) , y:  150 )
         spinner?.activityIndicatorViewStyle = .whiteLarge
         spinner?.color = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         spinner?.startAnimating()
         collectionView?.addSubview(spinner!)
-    
     }
     
     func removeSpinner(){
-        
         if spinner != nil {
             spinner?.removeFromSuperview()
         }
@@ -113,7 +108,6 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         progressLabel?.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         progressLabel?.textAlignment = .center
         collectionView?.addSubview(progressLabel!)
-        
     }
     
     
@@ -124,7 +118,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func animateViewUp(){
-        pullUpViewConstrain.constant = 150
+        pullUpViewConstrain.constant = 300
         UIView.animate(withDuration: 0.3) { 
             self.view.layoutIfNeeded()
         }
@@ -140,7 +134,7 @@ extension MapVC: MKMapViewDelegate{
             return nil
         }
         
-        var pinAnnotation = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "droppablePin")
+        let pinAnnotation = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "droppablePin")
         pinAnnotation.pinTintColor = UIColor.orange
         pinAnnotation.animatesDrop = true
         
@@ -160,7 +154,13 @@ extension MapVC: MKMapViewDelegate{
         removePin()
         removeSpinner()
         removeProgressLabel()
-        cancelAllSesions()
+        cancelAllSessions()
+        
+        imageUrlArray = []
+        imageArray = []
+        
+        collectionView?.reloadData()
+        
         
         animateViewUp()
         addSwipe()
@@ -186,6 +186,7 @@ extension MapVC: MKMapViewDelegate{
                     if success {
                         self.removeSpinner()
                         self.removeProgressLabel()
+                        self.collectionView?.reloadData()
                     }
                 })
             }
@@ -199,7 +200,6 @@ extension MapVC: MKMapViewDelegate{
     }
     
     func retrieveUrls(forAnnotation anotation: DroppablePin, handler: @escaping (_ status: Bool)->()){
-        imageUrlArray = []
         
         Alamofire.request(flickrUrl(forApiKey: apiKey, withAnnotation: anotation, andNumberOfPhotos: 40)).responseJSON { (response) in
             
@@ -220,8 +220,6 @@ extension MapVC: MKMapViewDelegate{
     }
     
     func retrieveImages(handler: @escaping(_ status: Bool)->()){
-        imageArray = []
-        
         for url in imageUrlArray{
             Alamofire.request(url).responseImage(completionHandler: { (response) in
                 guard let image = response.result.value else { return }
@@ -236,10 +234,10 @@ extension MapVC: MKMapViewDelegate{
         }
     }
     
-    func cancelAllSesions(){
-        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler {(sessionDataTask, uploadData, downloadData) in
-            sessionDataTask.forEach({$0.cancel()})
-            downloadData.forEach({$0.cancel()})
+    func cancelAllSessions() {
+        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler { (sessionDataTask, uploadData, downloadData) in
+            sessionDataTask.forEach({ $0.cancel() })
+            downloadData.forEach({ $0.cancel() })
         }
     }
 }
@@ -261,24 +259,21 @@ extension MapVC: CLLocationManagerDelegate {
 
 
 extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // number of items in array.
-        return 4
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return imageArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotoCell
-        
-        
-        return cell!
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as? PhotoCell else { return UICollectionViewCell() }
+        let imageFromIndex = imageArray[indexPath.row]
+        let imageView = UIImageView(image: imageFromIndex)
+        cell.addSubview(imageView)
+        return cell
     }
-
 }
 
 
